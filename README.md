@@ -48,3 +48,7 @@ npm run dev
 
 The Home Page includes a Left Menu and a Header. It is customizable using the `HomePageTemplate`.
 
+![image](https://github.com/user-attachments/assets/e863c2e5-dd43-40ce-8e07-7f9a218a44ac)
+
+
+

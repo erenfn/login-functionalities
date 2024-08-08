@@ -1,6 +1,7 @@
 # Full-Stack Authorization System
 
 A basic full-stack authorization system built with ExpressJS and React.
+Sequelize is used for ORM and MUI is used for the UI.
 
 ## Endpoints
 

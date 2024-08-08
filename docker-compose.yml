@@ -1,0 +1,49 @@
+services:
+  login_backend:
+    image: login/login:v0
+    build: ./backend
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${PORT:-3000}
+      - JWT_SECRET=${JWT_SECRET:-your_jwt_secret}
+    command: >
+      bash -c "npx sequelize-cli db:migrate || (npx sequelize-cli db:create && npx sequelize-cli db:migrate) && if [ \"$$NODE_ENV\" = \"production\" ] ; then npm run prod ; elif [ \"$$NODE_ENV\" = \"staging\" ] ; then npm run staging ; else npm run dev ; fi"
+  
+  db:
+    image: postgres:latest
+    env_file:
+      - ./backend/.env
+    environment:
+      - POSTGRES_USER=${DEV_DB_USERNAME:-user}
+      - POSTGRES_PASSWORD=${DEV_DB_PASSWORD:-password}
+      - POSTGRES_DB=${DEV_DB_NAME:-login_db}
+      - POSTGRES_HOST=${DEV_DB_HOST:-localhost}
+      - POSTGRES_PORT=${DEV_DB_PORT:-5432}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+    command: >
+      bash -c "if [ \"$$NODE_ENV\" = \"production\" ] ; then npm run build && npm run preview ; fi"
+
+volumes:
+  pgdata:
